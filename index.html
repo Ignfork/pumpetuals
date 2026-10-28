@@ -1,0 +1,590 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>PUMPETUALS · call the perps, earn the pool · $PUMPETUALS</title>
+<meta name="description" content="Pumpetuals tracks the most traded perpetuals on pump.fun and Hyperliquid. Place call outs, get scored on the real price and earn from the weekly reward pool.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Pixelify+Sans:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="icon" id="fav" href="data:,">
+<style>
+:root{
+  --bg:#070b0a; --bg2:#0a100f; --panel:#0d1513; --panel2:#111c1a; --line:#1b2a27; --line2:#27403b;
+  --fg:#e8efe9; --mut:#7d8f89; --dim:#53645f;
+  --pg:#86efac; --pg2:#4ade80; --hl:#97fce4; --hl2:#50d2c1; --teal:#0b2a26;
+  --short:#ff6b7a; --amber:#ffcf5a; --cream:#f1f5ee; --violet:#b9a4ff;
+  --px:"Pixelify Sans",ui-monospace,monospace; --mono:"JetBrains Mono",ui-monospace,monospace;
+}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+html,body{margin:0;overflow-x:hidden}
+body{background:var(--bg);color:var(--fg);font:400 14px/1.65 var(--mono);-webkit-font-smoothing:antialiased}
+a{color:inherit;text-decoration:none}
+button,input,select{font:inherit;color:inherit}
+button{cursor:pointer}
+.px{image-rendering:pixelated}
+.up{color:var(--pg)}.dn{color:var(--short)}
+/* header */
+header{position:fixed;top:0;left:0;right:0;z-index:40;background:rgba(7,11,10,.86);backdrop-filter:blur(10px);border-bottom:1px solid var(--line)}
+.hd{display:flex;align-items:center;gap:26px;max-width:1240px;margin:0 auto;padding:12px 22px}
+.brand{display:flex;align-items:center;gap:10px;font:600 17px var(--px);letter-spacing:.06em}
+.brand canvas{width:30px;height:30px}
+.hd nav{display:flex;gap:22px;font-size:12px;letter-spacing:.08em;color:var(--mut)}
+.hd nav a:hover{color:var(--pg)}
+.hd .sp{flex:1}
+.b{display:inline-flex;align-items:center;justify-content:center;gap:10px;border:1px solid var(--line2);background:transparent;padding:10px 16px;font:600 12px var(--mono);letter-spacing:.08em;text-transform:uppercase;white-space:nowrap;transition:background .15s,color .15s,border-color .15s}
+.b:hover{border-color:var(--pg);color:var(--pg)}
+.b.c{background:var(--cream);color:#0a100f;border-color:var(--cream)}
+.b.c:hover{background:var(--pg);border-color:var(--pg);color:#05210f}
+.b.g{background:var(--pg);border-color:var(--pg);color:#05210f}
+.b.g:hover{background:var(--hl);border-color:var(--hl)}
+.b.lg{padding:15px 22px;font-size:13px}
+.xb{width:38px;height:38px;padding:0}
+/* hero */
+.hero{position:relative;padding:150px 22px 70px;border-bottom:1px solid var(--line);overflow:hidden}
+.hero:before{content:"";position:absolute;inset:0;background-image:linear-gradient(var(--line) 1px,transparent 1px),linear-gradient(90deg,var(--line) 1px,transparent 1px);background-size:56px 56px;opacity:.35;mask-image:radial-gradient(ellipse at 70% 40%,#000 10%,transparent 70%);-webkit-mask-image:radial-gradient(ellipse at 70% 40%,#000 10%,transparent 70%)}
+.hg{position:relative;max-width:1240px;margin:0 auto;display:grid;grid-template-columns:minmax(0,1.05fr) minmax(0,1fr);gap:40px;align-items:center}
+.kick{display:inline-flex;align-items:center;gap:10px;font-size:12px;letter-spacing:.12em;color:var(--pg)}
+.kick i{width:8px;height:8px;background:var(--pg);box-shadow:0 0 12px var(--pg)}
+h1{margin:18px 0 22px;font:500 clamp(46px,6.6vw,92px)/.98 var(--px);letter-spacing:.01em;text-transform:uppercase}
+h1 em{font-style:normal;color:var(--pg)}
+h1 u{text-decoration:none;color:var(--hl)}
+.hero p.l{max-width:500px;color:#b9c6c1;font-size:15px;margin:0 0 30px}
+.hcta{display:flex;flex-direction:column;align-items:flex-start;gap:12px}
+.hnote{margin-top:22px;font-size:11.5px;letter-spacing:.1em;color:var(--dim)}
+.rig{position:relative;aspect-ratio:1.15;max-width:560px;width:100%;margin-left:auto}
+.rig svg{position:absolute;inset:0;width:100%;height:100%}
+.node{position:absolute;display:flex;flex-direction:column;align-items:center;gap:8px;transform:translate(-50%,-50%);font-size:12px;color:#cfdad5;text-align:center}
+.node .ic{width:56px;height:56px;border:1px solid var(--line2);background:var(--panel);display:grid;place-items:center}
+.node .ic canvas{width:32px;height:32px}
+.node small{display:block;font-size:10.5px;color:var(--mut);letter-spacing:.06em}
+.bot{position:absolute;left:50%;top:46%;transform:translate(-50%,-50%);width:38%}
+.bot canvas{width:100%;height:auto;display:block}
+.rigcap{position:absolute;left:0;right:0;bottom:2%;text-align:center;font-size:11px;letter-spacing:.14em;color:var(--mut)}
+/* spec grid */
+.spec{max-width:1240px;margin:0 auto;display:grid;grid-template-columns:repeat(4,minmax(0,1fr));border-left:1px solid var(--line)}
+.spec div{padding:18px 22px;border-right:1px solid var(--line);border-bottom:1px solid var(--line)}
+.spec span{display:block;font-size:10.5px;letter-spacing:.12em;color:var(--mut)}
+.spec b{font-size:13px;letter-spacing:.06em;font-weight:600}
+.spec b i{font-style:normal;display:inline-block;width:7px;height:7px;margin-right:8px;vertical-align:1px}
+/* ticker */
+.tick{border-bottom:1px solid var(--line);overflow:hidden;background:var(--bg2)}
+.tick .tr{display:flex;width:max-content;animation:mq 60s linear infinite}
+.tick:hover .tr{animation-play-state:paused}
+@keyframes mq{to{transform:translateX(-50%)}}
+.tick span{padding:11px 22px;border-right:1px solid var(--line);font-size:12.5px;white-space:nowrap}
+.tick span b{font-weight:600;margin-right:8px}
+/* sections */
+section.s{padding:90px 22px;border-bottom:1px solid var(--line)}
+.wrap{max-width:1240px;margin:0 auto}
+.sh{display:flex;align-items:center;justify-content:space-between;gap:14px;margin-bottom:28px;font-size:12px;letter-spacing:.12em;color:var(--mut);flex-wrap:wrap}
+.sh b{color:var(--pg);font-weight:600}
+.sh a{color:var(--pg);font-weight:600}
+.sh a:hover{color:var(--hl)}
+h2{margin:0 0 16px;font:500 clamp(34px,4.6vw,60px)/1 var(--px);text-transform:uppercase}
+h2 em{font-style:normal;color:var(--pg)}h2 u{text-decoration:none;color:var(--hl)}
+.lede{color:#a9b8b2;max-width:620px;margin:0 0 30px}
+/* tracker */
+.bar{display:flex;gap:10px;flex-wrap:wrap;align-items:center;margin-bottom:14px}
+.seg{display:flex;border:1px solid var(--line2)}
+.seg button{border:0;border-right:1px solid var(--line2);background:none;padding:9px 13px;font-size:11.5px;letter-spacing:.08em;color:var(--mut);text-transform:uppercase}
+.seg button:last-child{border-right:0}
+.seg button.on{background:var(--pg);color:#05210f;font-weight:600}
+.seg.hlseg button.on{background:var(--hl);color:#062a24}
+.srch{display:flex;align-items:center;gap:8px;border:1px solid var(--line2);padding:8px 12px;min-width:220px;flex:1;max-width:320px}
+.srch input{border:0;outline:none;background:none;width:100%;font-size:12.5px}
+.live{margin-left:auto;display:flex;align-items:center;gap:8px;font-size:11.5px;letter-spacing:.1em;color:var(--mut)}
+.live i{width:8px;height:8px;background:var(--amber)}
+.live.on i{background:var(--pg);box-shadow:0 0 10px var(--pg);animation:bl 1.4s steps(2) infinite}
+@keyframes bl{50%{opacity:.25}}
+.tbl{border:1px solid var(--line)}
+.tr2{display:grid;grid-template-columns:34px minmax(150px,1.4fr) 1fr .9fr 1fr 1fr .9fr 110px 92px;align-items:center;gap:10px;padding:11px 16px;border-bottom:1px solid var(--line);font-size:13px}
+.tr2:last-child{border-bottom:0}
+.tr2.h{font-size:10.5px;letter-spacing:.12em;color:var(--mut);background:var(--bg2);padding:10px 16px}
+.tr2.h button{border:0;background:none;padding:0;font:inherit;letter-spacing:inherit;color:inherit;text-align:left}
+.tr2.h button.on{color:var(--pg)}
+.tr2:not(.h){cursor:pointer;transition:background .12s}
+.tr2:not(.h):hover{background:var(--panel)}
+.tr2.sel{background:var(--panel2);box-shadow:inset 3px 0 0 var(--pg)}
+.rk{color:var(--dim);font-size:12px}
+.mk{display:flex;align-items:center;gap:10px;min-width:0}
+.mk .tk{width:30px;height:30px;flex:none;display:grid;place-items:center;font:600 11px var(--px);border:1px solid var(--line2)}
+.mk b{font-weight:600}
+.mk small{display:block;font-size:10.5px;color:var(--mut);letter-spacing:.04em}
+.vb{display:inline-block;font-size:9.5px;letter-spacing:.08em;padding:1px 5px;margin-left:6px;vertical-align:1px;font-weight:600}
+.vb.p{background:var(--pg);color:#05210f}.vb.h{border:1px solid var(--hl2);color:var(--hl)}
+.num{font-variant-numeric:tabular-nums}
+.tr2 canvas{width:100px;height:28px}
+.callb{border:1px solid var(--line2);background:none;padding:6px 10px;font-size:11px;letter-spacing:.08em;color:var(--pg)}
+.callb:hover{background:var(--pg);color:#05210f;border-color:var(--pg)}
+.calls-n{font-size:11.5px;color:var(--amber)}
+.tfoot{display:flex;justify-content:space-between;gap:10px;flex-wrap:wrap;margin-top:10px;font-size:11.5px;color:var(--dim)}
+.more{display:block;width:100%;border:1px solid var(--line);border-top:0;background:var(--bg2);padding:10px;font-size:11.5px;letter-spacing:.1em;color:var(--mut)}
+.more:hover{color:var(--pg)}
+/* call desk */
+.desk{display:grid;align-items:start;grid-template-columns:minmax(0,1.25fr) minmax(0,1fr);border:1px solid var(--line)}
+.chartp{padding:20px;border-right:1px solid var(--line);min-width:0}
+.ch{display:flex;align-items:baseline;gap:14px;flex-wrap:wrap;margin-bottom:12px}
+.ch b{font:600 28px var(--px)}
+.ch .px2{font:600 22px var(--mono)}
+.ch .tags{margin-left:auto;display:flex;gap:6px;flex-wrap:wrap}
+.ch .tags span{font-size:10.5px;letter-spacing:.08em;border:1px solid var(--line2);padding:2px 7px;color:var(--mut)}
+#cc{width:100%;height:280px;display:block;background:var(--bg2);border:1px solid var(--line)}
+.cstats{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));margin-top:12px;border:1px solid var(--line)}
+.cstats div{padding:10px 12px;border-right:1px solid var(--line)}
+.cstats div:last-child{border-right:0}
+.cstats span{display:block;font-size:10px;letter-spacing:.1em;color:var(--mut)}
+.cstats b{font-size:14px;font-weight:600}
+.form{padding:20px}
+.form label{display:block;font-size:10.5px;letter-spacing:.12em;color:var(--mut);margin:16px 0 7px}
+.form label:first-child{margin-top:0}
+.dir{display:grid;grid-template-columns:1fr 1fr}
+.dir button{border:1px solid var(--line2);background:none;padding:13px;font:600 18px var(--px);letter-spacing:.06em}
+.dir button.L.on{background:var(--pg);color:#05210f;border-color:var(--pg)}
+.dir button.S.on{background:var(--short);color:#2a0509;border-color:var(--short)}
+.f2{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.inp{display:flex;align-items:center;border:1px solid var(--line2);background:var(--bg2)}
+.inp input,.inp select{flex:1;min-width:0;border:0;outline:none;background:none;padding:10px 12px;font-size:13px}
+.inp select{appearance:none;-webkit-appearance:none}
+.inp select option{background:var(--panel)}
+.inp span{padding:0 10px;color:var(--mut);font-size:11.5px}
+.inp:focus-within{border-color:var(--pg)}
+.pills{display:flex;gap:6px;flex-wrap:wrap}
+.pills button{border:1px solid var(--line2);background:none;padding:7px 11px;font-size:11.5px;letter-spacing:.06em;color:var(--mut)}
+.pills button.on{border-color:var(--hl);color:var(--hl);background:rgba(151,252,228,.08)}
+.conv{display:grid;grid-template-columns:repeat(3,1fr);gap:6px}
+.conv button{border:1px solid var(--line2);background:none;padding:9px 6px;font-size:11.5px;color:var(--mut)}
+.conv button b{display:block;font:600 16px var(--px);color:var(--fg)}
+.conv button.on{border-color:var(--amber);color:var(--amber);background:rgba(255,207,90,.07)}
+.prev{margin-top:16px;border:1px dashed var(--line2);padding:12px 14px;font-size:12px;color:#b9c6c1}
+.prev b{color:var(--fg)}
+.prev .w{color:var(--pg)}.prev .x{color:var(--short)}
+.form .b.g{width:100%;margin-top:14px}
+.ferr{color:var(--short);font-size:12px;min-height:18px;margin-top:8px}
+/* engines-style call types */
+.cards{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));border-left:1px solid var(--line);border-top:1px solid var(--line)}
+.card{position:relative;padding:22px;border-right:1px solid var(--line);border-bottom:1px solid var(--line);min-height:210px;transition:background .15s}
+.card:hover{background:var(--panel)}
+.card .ar{position:absolute;right:18px;top:16px;color:var(--pg)}
+.card canvas{width:28px;height:28px}
+.card .no{margin-top:22px;font-size:11px;letter-spacing:.1em;color:var(--mut)}
+.card h3{margin:6px 0 8px;font:500 24px var(--px);text-transform:uppercase}
+.card p{margin:0 0 14px;color:#a9b8b2;font-size:13px}
+.card .stt{font-size:10.5px;letter-spacing:.12em;color:var(--mut)}
+.card .stt.on{color:var(--pg)}
+/* live calls */
+.lc{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:0;border-left:1px solid var(--line);border-top:1px solid var(--line)}
+.call{padding:16px 18px;border-right:1px solid var(--line);border-bottom:1px solid var(--line);font-size:12.5px}
+.call .t{display:flex;align-items:center;gap:10px}
+.call .t .who{font-weight:600}
+.call .t .d{font:600 12px var(--px);padding:1px 7px;letter-spacing:.06em}
+.call .t .d.L{background:var(--pg);color:#05210f}.call .t .d.S{background:var(--short);color:#2a0509}
+.call .t .st{margin-left:auto;font-size:10.5px;letter-spacing:.1em;color:var(--mut)}
+.call .t .st.w{color:var(--pg)}.call .t .st.x{color:var(--short)}.call .t .st.e{color:var(--amber)}
+.call .ln{display:flex;justify-content:space-between;color:var(--mut);margin:8px 0 6px;font-size:11.5px;flex-wrap:wrap;gap:6px}
+.call .ln b{color:var(--fg);font-weight:600}
+.track{position:relative;height:10px;background:var(--bg2);border:1px solid var(--line2)}
+.track .z{position:absolute;top:-1px;bottom:-1px;width:2px;background:var(--fg)}
+.track .f{position:absolute;top:0;bottom:0}
+.track .m{position:absolute;top:-4px;width:8px;height:16px;margin-left:-4px;background:var(--amber)}
+.call .ft{display:flex;justify-content:space-between;margin-top:7px;font-size:11px;color:var(--dim)}
+.mine{box-shadow:inset 3px 0 0 var(--hl)}
+.lch{display:flex;gap:10px;margin-bottom:14px;flex-wrap:wrap}
+/* steps */
+.flow{display:grid;grid-template-columns:repeat(6,minmax(0,1fr));border-left:1px solid var(--line);border-top:1px solid var(--line)}
+.flow div{padding:20px;border-right:1px solid var(--line);border-bottom:1px solid var(--line)}
+.flow b{display:block;font:500 30px var(--px);color:var(--pg)}
+.flow h4{margin:10px 0 6px;font:500 17px var(--px);text-transform:uppercase}
+.flow p{margin:0;font-size:12.5px;color:#a9b8b2}
+.cycle{display:flex;flex-wrap:wrap;gap:0;margin-top:26px;border:1px solid var(--line)}
+.cycle span{flex:1;min-width:120px;padding:14px;border-right:1px solid var(--line);font-size:12px;letter-spacing:.06em;text-align:center}
+.cycle span:last-child{border-right:0}
+.cycle span.on{background:var(--pg);color:#05210f;font-weight:600}
+/* scoring (mint) */
+.mint{background:var(--hl);color:#052520}
+.mint .sh,.mint .sh a{color:#0b4a40}.mint .sh b{color:#052520}
+.mint .lede{color:#0b4a40}
+.formula{border:1px solid #052520;background:#c6fff1;padding:22px;font:600 clamp(15px,2vw,22px)/1.5 var(--mono);margin-bottom:18px;overflow-x:auto}
+.formula i{font-style:normal;color:#0d7a5f}
+.mults{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));border-left:1px solid #052520;border-top:1px solid #052520}
+.mults div{padding:16px;border-right:1px solid #052520;border-bottom:1px solid #052520}
+.mults span{display:block;font-size:10.5px;letter-spacing:.12em;color:#0b4a40}
+.mults b{font:500 22px var(--px)}
+.mults p{margin:4px 0 0;font-size:12px;color:#0b4a40}
+/* leaderboard (cream) */
+.cream{background:var(--cream);color:#0a100f}
+.cream .sh{color:#55635e}.cream .sh b,.cream .sh a{color:#15803d}
+.cream .lede{color:#55635e}
+.lb{display:grid;grid-template-columns:minmax(0,1.5fr) minmax(0,1fr);gap:22px}
+.lbt{border:1px solid #0a100f}
+.lr{display:grid;grid-template-columns:44px minmax(0,1fr) 80px 80px 96px;gap:10px;align-items:center;padding:11px 16px;border-bottom:1px solid #d5ddd6;font-size:13px}
+.lr:last-child{border-bottom:0}
+.lr.h{font-size:10.5px;letter-spacing:.12em;color:#55635e;background:#e6ece5}
+.lr .r{font:600 18px var(--px)}
+.lr.me{background:#dcfce7}
+.lr .w{color:#15803d;font-weight:600}
+.pool{border:1px solid #0a100f;padding:22px;background:#0a100f;color:var(--fg)}
+.pool h3{margin:0;font:500 28px var(--px);text-transform:uppercase}
+.pool .big{font:500 46px var(--px);color:var(--pg);margin:8px 0}
+.pool .cd{font-size:12px;color:var(--mut);letter-spacing:.08em}
+.pool .cd b{color:var(--amber)}
+.split{display:flex;height:12px;margin:16px 0 8px}
+.split i{display:block;height:100%}
+.legend div{display:flex;justify-content:space-between;font-size:12px;padding:5px 0;border-bottom:1px solid var(--line)}
+.legend div:last-child{border-bottom:0}
+.legend span{display:flex;align-items:center;gap:8px;color:#b9c6c1}
+.legend span i{width:9px;height:9px;display:inline-block}
+.you{margin-top:14px;border:1px dashed var(--line2);padding:12px;font-size:12px;color:#b9c6c1}
+.you b{color:var(--hl)}
+/* economy */
+.eco{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));border-left:1px solid var(--line);border-top:1px solid var(--line)}
+.eco div{padding:28px;border-right:1px solid var(--line);border-bottom:1px solid var(--line)}
+.eco h3{margin:0 0 10px;font:500 clamp(24px,3vw,36px)/1.05 var(--px);text-transform:uppercase}
+.eco p{margin:0;color:#a9b8b2}
+.fine{margin-top:16px;font-size:12px;color:var(--dim)}
+/* token */
+.tok{display:grid;grid-template-columns:minmax(0,1.2fr) minmax(0,1fr);border:1px solid var(--line)}
+.tok>div{padding:26px}
+.tok>div:first-child{border-right:1px solid var(--line)}
+.ca{display:flex;border:1px solid var(--line2);margin:16px 0}
+.ca b{flex:1;padding:11px 13px;font-size:12.5px;color:var(--pg);overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.ca button{border:0;border-left:1px solid var(--line2);background:none;padding:0 14px;font-size:11.5px;letter-spacing:.08em}
+.ca button:hover{color:var(--pg)}
+.tk2 div{display:flex;justify-content:space-between;padding:10px 0;border-bottom:1px solid var(--line);font-size:13px}
+.tk2 div:last-child{border-bottom:0}
+.tk2 span{color:var(--mut)}
+/* final */
+.final{padding:110px 22px;text-align:center;position:relative;overflow:hidden}
+.final h2{font-size:clamp(40px,6vw,80px)}
+.final canvas{width:120px;height:120px;margin-bottom:20px}
+footer{padding:28px 22px 40px;font-size:12px;color:var(--dim)}
+footer .wrap{display:flex;justify-content:space-between;gap:20px;flex-wrap:wrap}
+footer a{color:var(--pg)}
+#toast{position:fixed;left:50%;bottom:24px;transform:translate(-50%,16px);opacity:0;z-index:90;background:var(--cream);color:#0a100f;padding:12px 18px;font:600 12.5px var(--mono);letter-spacing:.04em;transition:.25s;pointer-events:none;max-width:calc(100% - 32px);text-align:center;border-left:4px solid var(--pg)}
+#toast.show{opacity:1;transform:translate(-50%,0)}
+.rv{opacity:0;transform:translateY(18px);transition:opacity .6s,transform .6s}
+.rv.in{opacity:1;transform:none}
+@media (max-width:1100px){.tr2{grid-template-columns:30px minmax(130px,1.4fr) 1fr .9fr 1fr .9fr 92px}.tr2 .c-oi,.tr2 .c-sp{display:none}.flow{grid-template-columns:repeat(3,minmax(0,1fr))}}
+@media (max-width:900px){.hd nav{display:none}.hg,.desk,.lb,.tok{grid-template-columns:minmax(0,1fr)}.rig{margin:0 auto}.chartp,.tok>div:first-child{border-right:0;border-bottom:1px solid var(--line)}.spec{grid-template-columns:repeat(2,minmax(0,1fr))}.cards{grid-template-columns:repeat(2,minmax(0,1fr))}.lc{grid-template-columns:minmax(0,1fr)}.mults{grid-template-columns:repeat(2,minmax(0,1fr))}}
+@media (max-width:640px){.hd{padding:10px 14px;gap:10px}.hd .b.c{padding:9px 11px;font-size:11px}.hero{padding:110px 16px 50px}section.s{padding:70px 16px}.tr2{grid-template-columns:minmax(0,1.5fr) 1fr .8fr;padding:12px}.tr2 .c-rk,.tr2 .c-vol,.tr2 .c-fd,.tr2 .c-call,.tr2 .c-n{display:none}.cards,.flow,.eco{grid-template-columns:minmax(0,1fr)}.cstats{grid-template-columns:repeat(2,minmax(0,1fr))}.cstats div:nth-child(2){border-right:0}.cstats div:nth-child(-n+2){border-bottom:1px solid var(--line)}.lr{grid-template-columns:34px minmax(0,1fr) 64px 76px}.lr .c-wr{display:none}.srch{max-width:none;min-width:0;width:100%}.live{margin-left:0}#cc{height:220px}.node .ic{width:46px;height:46px}.node{font-size:10.5px}}
+</style>
+</head>
+<body>
+<header><div class="hd">
+  <a class="brand" href="#top"><canvas class="px" id="brandC" width="16" height="16"></canvas>PUMPETUALS</a>
+  <nav><a href="#perps">PERPS</a><a href="#desk">CALL</a><a href="#calls">LIVE CALLS</a><a href="#score">SCORING</a><a href="#board">LEADERBOARD</a></nav>
+  <span class="sp"></span>
+  <a class="b xb" id="xTop" href="#" aria-label="X"><svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="M18.9 2H22l-7.2 8.2L23 22h-6.6l-5.2-6.8L5.3 22H2.2l7.7-8.8L1.8 2h6.8l4.7 6.2L18.9 2Zm-1.2 18h1.7L7.4 3.9H5.6L17.7 20Z"/></svg></a>
+  <a class="b c" href="#desk">PLACE A CALL ↗</a>
+</div></header>
+
+<main id="top">
+<section class="hero"><div class="hg">
+  <div>
+    <span class="kick"><i></i>PERP CALL OUTS · PUMP.FUN + HYPERLIQUID</span>
+    <h1>EVERY PERP<br>NEEDS A<br><em>CALLER.</em></h1>
+    <p class="l">Track the most traded perpetuals on pump.fun and Hyperliquid. Call the move, get scored against the real mark price, and earn a share of the weekly reward pool.</p>
+    <div class="hcta"><a class="b c lg" href="#desk">PLACE A CALL ↗</a><a class="b lg" href="#perps">TRACK THE PERPS →</a></div>
+    <div class="hnote">YOUR CALL. THE REAL PRICE. A REAL SCORE.</div>
+  </div>
+  <div class="rig" id="rig">
+    <svg viewBox="0 0 100 87" preserveAspectRatio="none" aria-hidden="true"><g stroke="#27403b" stroke-width=".35" fill="none" stroke-dasharray="1 1.2"><path d="M20 18 H36 V34"/><path d="M80 18 H64 V34"/><path d="M20 66 H36 V52"/><path d="M80 66 H64 V52"/></g><g fill="#86efac"><rect x="35.4" y="33.4" width="1.2" height="1.2"/><rect x="63.4" y="33.4" width="1.2" height="1.2"/></g><g fill="#97fce4"><rect x="35.4" y="51.4" width="1.2" height="1.2"/><rect x="63.4" y="51.4" width="1.2" height="1.2"/></g></svg>
+    <div class="node" style="left:20%;top:20%"><div class="ic"><canvas class="px" data-ic="pill" width="16" height="16"></canvas></div>pump.fun perps<small>BTC · ETH</small></div>
+    <div class="node" style="left:80%;top:20%"><div class="ic"><canvas class="px" data-ic="wave" width="16" height="16"></canvas></div>Hyperliquid<small id="nHL">order books</small></div>
+    <div class="node" style="left:20%;top:76%"><div class="ic"><canvas class="px" data-ic="long" width="16" height="16"></canvas></div>Long calls<small id="nL">target ↑ · stop ↓</small></div>
+    <div class="node" style="left:80%;top:76%"><div class="ic"><canvas class="px" data-ic="short" width="16" height="16"></canvas></div>Short calls<small id="nS">target ↓ · stop ↑</small></div>
+    <div class="bot"><canvas class="px" id="bot" width="24" height="24"></canvas></div>
+    <div class="rigcap">TWO VENUES. ONE BOARD. EVERY CALL SCORED.</div>
+  </div>
+</div></section>
+
+<div class="spec">
+  <div><span>TRACKED VENUES</span><b><i style="background:var(--pg)"></i>PUMP.FUN / HYPERLIQUID</b></div>
+  <div><span>PRICE SOURCE</span><b><i style="background:var(--hl)"></i>HYPERLIQUID MARK PRICE</b></div>
+  <div><span>CALL TYPES</span><b><i style="background:var(--amber)"></i>LONG · SHORT · TARGET · STOP</b></div>
+  <div><span>REWARDS</span><b><i style="background:var(--violet)"></i>WEEKLY POOL · TOP CALLERS</b></div>
+</div>
+<div class="tick" aria-hidden="true"><div class="tr" id="tick"></div></div>
+
+<section class="s" id="perps"><div class="wrap rv">
+  <div class="sh"><span><b>01</b> · MOST TRADED PERPS</span><a href="#desk">CALL ONE →</a></div>
+  <h2>WHAT'S <em>MOVING</em> RIGHT NOW.</h2>
+  <p class="lede">Every perp listed on Hyperliquid, ranked by 24h volume. Markets you can also trade through pump.fun's perps are tagged. Click a row to load it into the call desk.</p>
+  <div class="bar">
+    <div class="seg" id="venue"><button type="button" class="on" data-v="all">ALL</button><button type="button" data-v="pump">ON PUMP.FUN</button><button type="button" data-v="called">MOST CALLED</button></div>
+    <label class="srch">⌕<input id="q" placeholder="search market" aria-label="Search markets"></label>
+    <span class="live" id="live"><i></i><span id="liveT">CONNECTING…</span></span>
+  </div>
+  <div class="tbl" id="tbl"></div>
+  <button type="button" class="more" id="more">SHOW MORE MARKETS ↓</button>
+  <div class="tfoot"><span id="srcNote">Data: Hyperliquid public info API, refreshed every 10s.</span><span>pump.fun tags: BTC, ETH (per launch reports). Edit PUMP_MARKETS in the config.</span></div>
+</div></section>
+
+<section class="s" id="desk"><div class="wrap rv">
+  <div class="sh"><span><b>02</b> · THE CALL DESK</span><a href="#score">HOW SCORING WORKS →</a></div>
+  <h2>MAKE THE <u>CALL.</u></h2>
+  <p class="lede">Pick a market, a direction, a target and a stop. Your call is tracked against the live mark price until it hits target, hits stop or runs out of time.</p>
+  <div class="desk">
+    <div class="chartp">
+      <div class="ch"><b id="cSym">BTC</b><span class="px2 num" id="cPx">—</span><span class="num" id="cChg">—</span><div class="tags" id="cTags"></div></div>
+      <canvas id="cc"></canvas>
+      <div class="cstats"><div><span>24H VOLUME</span><b class="num" id="cV">—</b></div><div><span>OPEN INTEREST</span><b class="num" id="cO">—</b></div><div><span>FUNDING / 1H</span><b class="num" id="cF">—</b></div><div><span>MAX LEVERAGE</span><b class="num" id="cL">—</b></div></div>
+    </div>
+    <form class="form" id="form" autocomplete="off">
+      <label>MARKET</label><div class="inp"><select id="fM" aria-label="Market"></select><span>▾</span></div>
+      <label>DIRECTION</label><div class="dir"><button type="button" class="L on" data-d="1">▲ LONG</button><button type="button" class="S" data-d="-1">▼ SHORT</button></div>
+      <div class="f2"><div><label for="fT">TARGET</label><div class="inp"><input id="fT" inputmode="decimal"><span id="fTp">+3%</span></div></div><div><label for="fS">STOP</label><div class="inp"><input id="fS" inputmode="decimal"><span id="fSp">-1.5%</span></div></div></div>
+      <label>TIMEFRAME</label><div class="pills" id="fTF"><button type="button" data-h="1">1H ×1.0</button><button type="button" data-h="4" class="on">4H ×1.2</button><button type="button" data-h="24">24H ×1.5</button><button type="button" data-h="168">7D ×2.0</button></div>
+      <label>CONVICTION (POINTS AT RISK)</label><div class="conv" id="fC"><button type="button" data-c="1">LOW<b>×1</b></button><button type="button" data-c="2" class="on">MID<b>×2</b></button><button type="button" data-c="3">MAX<b>×3</b></button></div>
+      <div class="prev" id="prev"></div>
+      <div class="ferr" id="ferr"></div>
+      <button class="b g lg" type="submit">LOCK THE CALL ↗</button>
+      <p class="fine" style="margin-top:10px">Calls score points, not trades. Pumpetuals never touches your funds. In this preview your calls are saved on this device.</p>
+    </form>
+  </div>
+</div></section>
+
+<section class="s" id="types"><div class="wrap rv">
+  <div class="sh"><span><b>03</b> · WHAT CAN YOU CALL?</span><span>SIX CALL TYPES</span></div>
+  <div class="cards" id="cards"></div>
+</div></section>
+
+<section class="s" id="calls"><div class="wrap rv">
+  <div class="sh"><span><b>04</b> · LIVE CALLS</span><span id="cCount">—</span></div>
+  <h2>CALLS ON THE <em>BOARD.</em></h2>
+  <p class="lede">The amber marker is the live price. Green fills toward target, red toward stop. Community calls here are a simulation until launch. Yours are real and tracked live.</p>
+  <div class="lch"><div class="seg hlseg" id="cf"><button type="button" class="on" data-f="all">ALL</button><button type="button" data-f="mine">MINE</button><button type="button" data-f="open">OPEN</button><button type="button" data-f="done">SETTLED</button></div></div>
+  <div class="lc" id="lc"></div>
+</div></section>
+
+<section class="s" id="flow"><div class="wrap rv">
+  <div class="sh"><span><b>05</b> · FROM CALL TO REWARD</span></div>
+  <div class="flow">
+    <div><b>01</b><h4>Pick a perp</h4><p>Any Hyperliquid market, tagged when it's also on pump.fun perps.</p></div>
+    <div><b>02</b><h4>Set the call</h4><p>Direction, target, stop, timeframe and conviction. Entry locks at the live mark.</p></div>
+    <div><b>03</b><h4>Price decides</h4><p>The Hyperliquid mark price is the only judge. No votes, no edits.</p></div>
+    <div><b>04</b><h4>Settle</h4><p>Target hit, stop hit, or time's up. Expired calls score how far they got.</p></div>
+    <div><b>05</b><h4>Climb the board</h4><p>Points stack into your weekly rank. Streaks add a bonus.</p></div>
+    <div><b>06</b><h4>Claim rewards</h4><p>Top callers split the weekly pool, funded by $PUMPETUALS creator rewards.</p></div>
+  </div>
+  <div class="cycle" id="cycle"><span>CALL</span><span>TRACK</span><span>SETTLE</span><span>SCORE</span><span>RANK</span><span>REWARD</span></div>
+</div></section>
+
+<section class="s mint" id="score"><div class="wrap rv">
+  <div class="sh"><span><b>06</b> · SCORING</span><span>FAIR, PUBLIC, PRICE-ONLY</span></div>
+  <h2>THE MATH IS THE REFEREE.</h2>
+  <p class="lede">Bold calls that land score more. Safe calls that land still score. Calls that hit their stop lose the points at risk.</p>
+  <div class="formula">points = 100 × <i>progress</i> × <i>reach</i> × <i>time</i> × <i>conviction</i><br><span style="font-size:.7em;color:#0b4a40">target hit → progress 1.0 + 50% bonus · stop hit → −100 × conviction · expiry → progress as-is</span></div>
+  <div class="mults">
+    <div><span>PROGRESS</span><b>−1 → 1</b><p>How far price moved from entry toward your target.</p></div>
+    <div><span>REACH</span><b>×0.5 → ×3</b><p>Target distance in %. Calling +10% beats calling +1%.</p></div>
+    <div><span>TIME</span><b>×1 → ×2</b><p>1h ×1.0 · 4h ×1.2 · 24h ×1.5 · 7d ×2.0</p></div>
+    <div><span>CONVICTION</span><b>×1 → ×3</b><p>More at risk, more to win. Also scales the stop-out loss.</p></div>
+  </div>
+</div></section>
+
+<section class="s cream" id="board"><div class="wrap rv">
+  <div class="sh"><span><b>07</b> · LEADERBOARD</span><span>WEEK 1 · SAMPLE CALLERS + YOU</span></div>
+  <h2>TOP CALLERS.</h2>
+  <div class="lb">
+    <div class="lbt" id="lbt"></div>
+    <div class="pool"><h3>Weekly pool</h3><div class="big" id="poolV">— SOL</div><div class="cd">PAYS OUT IN <b id="cdT">—</b></div>
+      <div class="split"><i style="width:60%;background:var(--pg)"></i><i style="width:25%;background:var(--hl)"></i><i style="width:15%;background:var(--violet)"></i></div>
+      <div class="legend"><div><span><i style="background:var(--pg)"></i>Top 10 callers by points</span><b>60%</b></div><div><span><i style="background:var(--hl)"></i>Streak bonus (3+ wins in a row)</span><b>25%</b></div><div><span><i style="background:var(--violet)"></i>Pump.fun market call of the week</span><b>15%</b></div></div>
+      <div class="you" id="you"></div>
+      <p class="fine">Pool size is a sample. Split is planned and confirmed at launch.</p></div>
+  </div>
+</div></section>
+
+<section class="s" id="eco"><div class="wrap rv">
+  <div class="sh"><span><b>08</b> · THE REWARD ECONOMY</span></div>
+  <div class="eco">
+    <div><h3>Creator rewards <em style="font-style:normal;color:var(--pg)">fund the pool.</em></h3><p>$PUMPETUALS creator rewards from trading are collected to a dedicated rewards wallet and paid out to top callers every week.</p></div>
+    <div><h3>Callers <u style="text-decoration:none;color:var(--hl)">earn the pool.</u></h3><p>Rank is pure points. Points come only from the mark price versus your call. Nothing else moves the board.</p></div>
+  </div>
+  <p class="fine">Calls are predictions for points, not trades or investment advice. Rewards depend on creator fees actually collected. Holding $PUMPETUALS is not required to call.</p>
+</div></section>
+
+<section class="s" id="token"><div class="wrap rv">
+  <div class="sh"><span><b>09</b> · $PUMPETUALS</span></div>
+  <div class="tok">
+    <div><h2 style="font-size:clamp(32px,4vw,48px)">$PUMPETUALS</h2><p class="lede" style="margin:0">The token that funds the board. Its creator rewards fill the weekly pool for the best callers.</p>
+      <div class="ca"><b id="caT">CA POSTED ON X AT LAUNCH</b><button type="button" id="caC">COPY</button></div>
+      <div style="display:flex;gap:10px;flex-wrap:wrap"><a class="b g" id="buyA" href="#">BUY $PUMPETUALS ↗</a><a class="b" id="xA" href="#">FOLLOW ON X ↗</a></div></div>
+    <div class="tk2"><div><span>Chain</span><b>Solana · pump.fun</b></div><div><span>Creator rewards</span><b>→ weekly caller pool</b></div><div><span>Price source</span><b>Hyperliquid mark</b></div><div><span>Calls</span><b>free, points only</b></div><div><span>Status</span><b style="color:var(--amber)">pre-launch</b></div></div>
+  </div>
+</div></section>
+
+<section class="final"><canvas class="px" id="bot2" width="24" height="24"></canvas><h2>EVERY PERP<br>STARTS WITH A <em>CALL.</em></h2><div style="margin-top:26px"><a class="b c lg" href="#desk">PLACE YOUR CALL ↗</a></div></section>
+</main>
+<footer><div class="wrap"><span>PUMPETUALS · $PUMPETUALS · <a id="xFoot" href="#">X ↗</a></span><span>Independent project. Not affiliated with pump.fun or Hyperliquid.</span></div>
+<div class="wrap" style="margin-top:12px;display:block">Market data comes from Hyperliquid's public API; if it can't be reached the page shows a labelled sample snapshot. Community calls, the leaderboard and the pool are samples until launch. Perps are high risk and may be restricted where you live. Nothing here is financial advice.</div></footer>
+<div id="toast"></div>
+
+<script>
+(function(){
+'use strict';
+/* ================= CONFIG ================= */
+var CONFIG={xUrl:'https://x.com/PumpetualsLive',xHandle:'@PumpetualsLive',ca:'',buyUrl:''};
+var PUMP_MARKETS=['BTC','ETH'];          // markets offered through pump.fun perps
+var HL_API='https://api.hyperliquid.xyz/info';
+/* ========================================== */
+function $(s){return document.querySelector(s)}
+function $$(s){return Array.prototype.slice.call(document.querySelectorAll(s))}
+var tt;function toast(m){var t=$('#toast');t.textContent=m;t.classList.add('show');clearTimeout(tt);tt=setTimeout(function(){t.classList.remove('show')},3000)}
+function srand(s){return function(){s=(s*1664525+1013904223)>>>0;return s/4294967296}}
+function esc(s){return String(s).replace(/[&<>"]/g,function(c){return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]})}
+function usd(v){var a=Math.abs(v);return '$'+(a>=1e9?(v/1e9).toFixed(2)+'B':a>=1e6?(v/1e6).toFixed(1)+'M':a>=1e3?(v/1e3).toFixed(1)+'K':v.toFixed(0))}
+function pfmt(p){if(!isFinite(p))return '—';var a=Math.abs(p);return a>=1000?p.toLocaleString(undefined,{maximumFractionDigits:1}):a>=10?p.toFixed(2):a>=1?p.toFixed(3):a>=.01?p.toFixed(5):p.toPrecision(4)}
+function pct(v,d){return (v>=0?'+':'')+(v*100).toFixed(d==null?2:d)+'%'}
+var LS={get:function(k,d){try{var v=localStorage.getItem('pumpetuals.'+k);return v?JSON.parse(v):d}catch(e){return d}},set:function(k,v){try{localStorage.setItem('pumpetuals.'+k,JSON.stringify(v))}catch(e){}}};
+
+/* ================= PIXEL ART ================= */
+var PAL={'.':null,k:'#070b0a',g:'#86efac',G:'#4ade80',d:'#15803d',h:'#97fce4',H:'#50d2c1',t:'#0b2a26',w:'#f1f5ee',r:'#ff6b7a',a:'#ffcf5a',s:'#27403b'};
+var BOT=[
+'........................','..........aa............','..........ss............','......ssssssssssss......','.....swwwwwwwwwwwws.....','....swkkkkkkkkkkkkws....','....swkttttttttttkws....','....swkttttttttttkws....','....swkttttttttttkws....','....swkttttttttttkws....','....swkttttttttttkws....','....swkttttttttttkws....','....swkkkkkkkkkkkkws....','....swwwwwwwwwwwwwws....','.....sssssssssssssss....','......shhhhhhhhhhhs.....','....sshHhhhhhhhhHhss....','...sghshhhrrhhhhhshgs...','...sgshhhhhhaahhhsgs....','....s.shhhhhhhhhhs.s....','......sHHHHHHHHHHs......','......ss.ss..ss.ss......','.....sgg.gg..hh.hhs.....','........................'];
+function paint(cv,rows,pal){var x=cv.getContext('2d');cv.width=rows[0].length;cv.height=rows.length;x.clearRect(0,0,cv.width,cv.height);rows.forEach(function(r,y){for(var i=0;i<r.length;i++){var c=(pal||PAL)[r[i]];if(c){x.fillStyle=c;x.fillRect(i,y,1,1)}}})}
+// bot screen animates: little candles
+var botFrames=[0,1,2,3].map(function(f){var R=srand(f*11+3),rows=BOT.map(function(r){return r.padEnd(24,'.').slice(0,24)});for(var cx=7;cx<17;cx+=2){var top=7+Math.floor(R()*3),len=1+Math.floor(R()*3),col=R()<.62?'g':'r';for(var y=7;y<12;y++){var row=rows[y].split('');row[cx]='t';row[cx+1]='t';if(y>=top&&y<top+len)row[cx]=col;rows[y]=row.join('')}}return rows});
+var botF=0;function drawBots(){paint($('#bot'),botFrames[botF]);paint($('#bot2'),botFrames[(botF+2)%4]);botF=(botF+1)%4}drawBots();setInterval(drawBots,700);
+var ICONS={
+ pill:['................','................','.......sss......','......sgggs.....','.....sgggggs....','....sgggggws....','...sgggggwws....','...sgggggwws....'.slice(0,16),'....sgggwwws....','....sggwwwws....','.....swwwws.....','......ssss......','................','................','................','................'],
+ wave:['................','................','................','................','...hh......hh...','..hHHh....hHHh..','.hH..Hh..hH..Hh.','.h....hhhh....h.','................','..hh......hh....','.hHHh....hHHh...','................','................','................','................','................'],
+ long:['................','.......gg.......','......gGGg......','.....gG..Gg.....','....gG....Gg....','...ggggGGgggg...','......gGGg......','......gGGg......','......gGGg......','......gGGg......','......gGGg......','......gggg......','................','..ssssssssssss..','................','................'],
+ short:['................','................','..ssssssssssss..','................','......rrrr......','......rrrr......','......rrrr......','......rrrr......','......rrrr......','......rrrr......','...rrrrrrrrrr...','....rr....rr....','.....rr..rr.....','......rrrr......','.......rr.......','................'],
+ dir:['................','..g..........r..','..gg........rr..','..ggg......rrr..','..gggg....rrrr..','..g..........r..','..g..........r..','..g..........r..','..g..........r..','..g..........r..','..g..........r..','..g..........r..','..g..........r..','..g..........r..','..ssssssssssss..','................'],
+ tgt:['................','.....hhhhhh.....','...hh......hh...','..h...hhhh...h..','..h..h....h..h..','.h..h..aa..h..h.','.h..h.aaaa.h..h.','.h..h.aaaa.h..h.','.h..h..aa..h..h.','..h..h....h..h..','..h...hhhh...h..','...hh......hh...','.....hhhhhh.....','................','................','................'],
+ stop:['................','.....rrrrrr.....','....rrrrrrrr....','...rrwwwwwwrr...','..rrwrrrrrrwrr..','..rrwrrrrrrwrr..','..rrwwwwwwwwrr..','..rrrrrrrrrwrr..','..rrrrrrrrrwrr..','..rrwwwwwwwwrr..','...rrrrrrrrrr...','....rrrrrrrr....','.....rrrrrr.....','................','................','................'],
+ fund:['................','..aaa.....aaa...','.a...a...a...a..','.a...a...a...a..','..aaa.....aaa...','.....a...a......','......a.a.......','.......a........','......a.a.......','.....a...a......','..aaa.....aaa...','.a...a...a...a..','.a...a...a...a..','..aaa.....aaa...','................','................'],
+ oi:['................','..............h.','.............hh.','............h.h.','..........hh....','.........h......','.......hh.......','..g...h.........','..g..h.....g....','..g.h...g..g....','..gh..g.g..g.g..','..g.g.g.g..g.g..','..g.g.g.g..g.g..','..ssssssssssss..','................','................'],
+ next:['................','....gggggggg....','...g........g...','..g..gggggg..g..','..g..g....g..g..','..g..gggggg..g..','..g..g.......g..','..g..g.......g..','...g........g...','....gggggggg....','........a.......','.......aaa......','......aaaaa.....','.......aaa......','........a.......','................']};
+$$('canvas[data-ic]').forEach(function(c){paint(c,ICONS[c.getAttribute('data-ic')])});
+(function(){paint($('#brandC'),botFrames[0].slice(2,18).map(function(r){return r.slice(4,20)}));var c=document.createElement('canvas');paint(c,botFrames[0]);var f=document.createElement('canvas');f.width=f.height=48;var x=f.getContext('2d');x.fillStyle='#070b0a';x.fillRect(0,0,48,48);x.imageSmoothingEnabled=false;x.drawImage(c,0,0,48,48);$('#fav').href=f.toDataURL()})();
+
+/* ================= MARKET DATA ================= */
+var M={},ORDER=[],LIVE=false,SEL=LS.get('sel','BTC'),SHOWN=12,VENUE='all',SORT='vol',HIST={};
+var SAMPLE=[['BTC',80480,80280,1.76e9,3.45e9,.0000125,40],['ETH',4180,4062,2.2e9,1.9e9,.0000110,25],['SOL',196.4,201.7,8.8e8,6.4e8,.0000140,20],['HYPE',47.8,45.2,6.1e8,8.9e8,.0000180,10],['XRP',2.84,2.79,3.4e8,4.1e8,.0000090,20],['DOGE',.2412,.2321,2.6e8,2.2e8,.0000122,20],['FARTCOIN',1.312,1.188,2.1e8,1.1e8,.0000310,10],['PUMP',.00642,.00601,1.9e8,1.6e8,.0000250,10],['SUI',3.71,3.80,1.4e8,1.3e8,.0000100,10],['kPEPE',.01204,.01161,1.2e8,8.4e7,.0000200,10],['ENA',.683,.651,1.1e8,1.0e8,.0000150,10],['LINK',23.4,23.9,9.6e7,1.2e8,.0000080,10],['AVAX',29.8,29.1,8.2e7,7.6e7,.0000100,10],['WIF',.912,.861,7.4e7,6.1e7,.0000210,10],['kBONK',.02512,.02455,6.1e7,4.4e7,.0000160,10],['TRUMP',8.42,8.71,5.5e7,9.1e7,.0000090,10],['ADA',.842,.829,5.1e7,8.0e7,.0000085,10],['BNB',1021,1009,4.6e7,7.3e7,.0000070,10],['AAVE',291,284,4.1e7,6.6e7,.0000090,10],['POPCAT',.402,.371,3.4e7,2.3e7,.0000260,10]];
+function loadSample(){SAMPLE.forEach(function(s){M[s[0]]={n:s[0],px:s[1],prev:s[2],vol:s[3],oi:s[4],fund:s[5],lev:s[6]}});rank()}
+function rank(){ORDER=Object.keys(M).sort(function(a,b){return M[b].vol-M[a].vol});ORDER.forEach(function(k,i){M[k].rk=i+1})}
+function pushHist(k,p){var h=HIST[k]||(HIST[k]=[]);h.push(p);if(h.length>120)h.shift()}
+function fetchHL(){return fetch(HL_API,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({type:'metaAndAssetCtxs'})}).then(function(r){if(!r.ok)throw 0;return r.json()}).then(function(d){var uni=d[0].universe,ctx=d[1],n=0;uni.forEach(function(u,i){var c=ctx[i];if(!c||u.isDelisted)return;var px=+c.markPx,prev=+c.prevDayPx;if(!isFinite(px)||px<=0)return;M[u.name]={n:u.name,px:px,prev:prev||px,vol:+c.dayNtlVlm||0,oi:(+c.openInterest||0)*px,fund:+c.funding||0,lev:u.maxLeverage||0};pushHist(u.name,px);n++});if(n<5)throw 0;rank();return n})}
+function tickSample(){var R=Math.random;ORDER.forEach(function(k){var m=M[k];m.px*=1+(R()-.5)*.0026;pushHist(k,m.px)})}
+function setLive(on){LIVE=on;$('#live').classList.toggle('on',on);$('#liveT').textContent=on?'LIVE · HYPERLIQUID':'SAMPLE SNAPSHOT';$('#srcNote').textContent=on?'Data: Hyperliquid public info API, refreshed every 10s.':'Hyperliquid API not reachable from here, showing a labelled sample snapshot that drifts for demo.';$('#nHL').textContent=on?ORDER.length+' perps live':'order books'}
+function refresh(){(LIVE||!ORDER.length?fetchHL():Promise.reject()).then(function(){if(!LIVE)setLive(true);after()}).catch(function(){if(!ORDER.length)loadSample();if(LIVE){/* transient */}else setLive(false);tickSample();after()})}
+var first=true;function after(){if(first){first=false;initDesk();seedCommunity()}renderTable();renderTicker();updateDesk();evalCalls();renderCalls();renderBoard()}
+// try live first, fall back after 4.5s
+var started=false;Promise.race([fetchHL().then(function(){setLive(true);return 1}),new Promise(function(r){setTimeout(function(){r(0)},4500)})]).then(function(ok){if(!ok&&!LIVE){loadSample();setLive(false)}started=true;after()}).catch(function(){loadSample();setLive(false);started=true;after()});
+setInterval(function(){if(started&&LIVE)fetchHL().then(after).catch(function(){})},10000);
+// faster cadence once in sample mode
+var sampleTimer=setInterval(function(){if(started&&!LIVE){tickSample();renderTable();renderTicker();updateDesk();evalCalls();renderCalls();renderBoard()}},3000);
+
+/* ================= TABLE ================= */
+function coinCol(n){var h=0;for(var i=0;i<n.length;i++)h=(h*31+n.charCodeAt(i))>>>0;var c=['#86efac','#97fce4','#ffcf5a','#b9a4ff','#ff9db0','#7fd1ff','#f1f5ee'];return c[h%c.length]}
+function spark(cv,k){var h=HIST[k]||[],m=M[k],x=cv.getContext('2d'),W=cv.width=100,H=cv.height=28;var pts=h.length>1?h:[m.prev,m.px];var lo=Math.min.apply(0,pts.concat(m.prev)),hi=Math.max.apply(0,pts.concat(m.prev));if(hi===lo){hi+=1;lo-=1}x.clearRect(0,0,W,H);
+  var y0=H-2-(m.prev-lo)/(hi-lo)*(H-4);x.fillStyle='#27403b';for(var i=0;i<W;i+=4)x.fillRect(i,Math.round(y0),2,1);
+  x.strokeStyle=m.px>=m.prev?'#86efac':'#ff6b7a';x.lineWidth=1.5;x.beginPath();pts.forEach(function(p,i){var X=i/(pts.length-1)*(W-2)+1,Y=H-2-(p-lo)/(hi-lo)*(H-4);i?x.lineTo(X,Y):x.moveTo(X,Y)});x.stroke()}
+function callCount(k){return CALLS.filter(function(c){return c.m===k&&c.st==='open'}).length}
+function renderTable(){var T=$('#tbl'),q=$('#q').value.trim().toUpperCase();var L=ORDER.slice();if(VENUE==='pump')L=L.filter(function(k){return PUMP_MARKETS.indexOf(k)>=0});if(q)L=L.filter(function(k){return k.toUpperCase().indexOf(q)>=0});
+  var key={vol:function(m){return m.vol},oi:function(m){return m.oi},chg:function(m){return m.px/m.prev-1},fund:function(m){return m.fund},px:function(m){return m.px}}[SORT]||function(m){return m.vol};
+  if(VENUE==='called')L.sort(function(a,b){return callCount(b)-callCount(a)||M[b].vol-M[a].vol});else L.sort(function(a,b){return key(M[b])-key(M[a])});
+  var total=L.length;L=L.slice(0,SHOWN);$('#more').style.display=total>SHOWN?'block':'none';
+  var hdr='<div class="tr2 h"><span class="c-rk">#</span><span>MARKET</span><button type="button" data-s="px" class="'+(SORT==='px'?'on':'')+'">MARK</button><button type="button" data-s="chg" class="'+(SORT==='chg'?'on':'')+'">24H</button><button type="button" data-s="vol" class="c-vol '+(SORT==='vol'?'on':'')+'">24H VOL</button><button type="button" data-s="oi" class="c-oi '+(SORT==='oi'?'on':'')+'">OPEN INT.</button><button type="button" data-s="fund" class="c-fd '+(SORT==='fund'?'on':'')+'">FUND/1H</button><span class="c-sp">SESSION</span><span class="c-call">CALLS</span></div>';
+  var rows=L.map(function(k){var m=M[k],ch=m.px/m.prev-1,pump=PUMP_MARKETS.indexOf(k)>=0,cc=callCount(k);return '<div class="tr2'+(k===SEL?' sel':'')+'" data-k="'+esc(k)+'"><span class="rk c-rk">'+m.rk+'</span><span class="mk"><span class="tk" style="color:'+coinCol(k)+'">'+esc(k.replace(/^k/,'').slice(0,3))+'</span><span><b>'+esc(k)+'</b>'+(pump?'<span class="vb p">PUMP.FUN</span>':'')+'<span class="vb h">HL</span><small>'+m.lev+'x max'+(cc?' · <span class="calls-n">'+cc+' open calls</span>':'')+'</small></span></span><span class="num">'+pfmt(m.px)+'</span><span class="num '+(ch>=0?'up':'dn')+'">'+pct(ch)+'</span><span class="num c-vol">'+usd(m.vol)+'</span><span class="num c-oi">'+usd(m.oi)+'</span><span class="num c-fd '+(m.fund>=0?'up':'dn')+'">'+(m.fund*100).toFixed(4)+'%</span><span class="c-sp"><canvas></canvas></span><span class="c-call"><button type="button" class="callb">CALL →</button></span></div>'}).join('');
+  T.innerHTML=hdr+(rows||'<div class="tr2" style="cursor:default"><span style="grid-column:1/-1;color:var(--mut)">No markets match.</span></div>');
+  $$('#tbl .tr2:not(.h)[data-k]').forEach(function(r){var k=r.getAttribute('data-k'),cv=r.querySelector('canvas');if(cv&&cv.offsetParent)spark(cv,k);r.addEventListener('click',function(){pick(k,true)})});
+  $$('#tbl .tr2.h button').forEach(function(b){b.addEventListener('click',function(){SORT=b.getAttribute('data-s');renderTable()})})}
+$$('#venue button').forEach(function(b){b.addEventListener('click',function(){VENUE=b.getAttribute('data-v');$$('#venue button').forEach(function(z){z.classList.toggle('on',z===b)});renderTable()})});
+$('#q').addEventListener('input',renderTable);$('#more').addEventListener('click',function(){SHOWN+=12;renderTable()});
+function renderTicker(){var T=$('#tick');var L=ORDER.slice(0,14),h='';for(var r=0;r<2;r++)L.forEach(function(k){var m=M[k],ch=m.px/m.prev-1;h+='<span><b>'+esc(k)+'-PERP</b>'+pfmt(m.px)+' <span class="'+(ch>=0?'up':'dn')+'">'+pct(ch)+'</span></span>'});if(T.innerHTML.length!==h.length||!T.dataset.n)T.innerHTML=h;else{T.innerHTML=h}T.dataset.n=1}
+
+/* ================= DESK ================= */
+var DIR=1,TF=4,CONV=2,CANDLES={},TFM={1:1,4:1.2,24:1.5,168:2};
+function initDesk(){var S=$('#fM');S.innerHTML=ORDER.slice(0,60).map(function(k){return '<option value="'+esc(k)+'">'+esc(k)+(PUMP_MARKETS.indexOf(k)>=0?' · pump.fun':'')+'</option>'}).join('');if(!M[SEL])SEL=ORDER[0];S.value=SEL;S.addEventListener('change',function(){pick(S.value,false)});pick(SEL,false)}
+function pick(k,scroll){SEL=k;LS.set('sel',k);if($('#fM').querySelector('option[value="'+k+'"]'))$('#fM').value=k;else{var o=document.createElement('option');o.value=k;o.textContent=k;$('#fM').appendChild(o);$('#fM').value=k}defaults();loadCandles(k);updateDesk();renderTable();if(scroll)$('#desk').scrollIntoView({behavior:'smooth'})}
+function defaults(){var p=M[SEL].px,t=p*(1+DIR*.03),s=p*(1-DIR*.015);$('#fT').value=pfmt(t).replace(/,/g,'');$('#fS').value=pfmt(s).replace(/,/g,'');preview()}
+$$('.dir button').forEach(function(b){b.addEventListener('click',function(){DIR=+b.getAttribute('data-d');$$('.dir button').forEach(function(z){z.classList.toggle('on',z===b)});defaults()})});
+$$('#fTF button').forEach(function(b){b.addEventListener('click',function(){TF=+b.getAttribute('data-h');$$('#fTF button').forEach(function(z){z.classList.toggle('on',z===b)});preview()})});
+$$('#fC button').forEach(function(b){b.addEventListener('click',function(){CONV=+b.getAttribute('data-c');$$('#fC button').forEach(function(z){z.classList.toggle('on',z===b)});preview()})});
+['#fT','#fS'].forEach(function(s){$(s).addEventListener('input',preview)});
+function reachMult(E,T){var d=Math.abs(T-E)/E*100;return Math.max(.5,Math.min(3,d/3))}
+function preview(){var m=M[SEL];if(!m)return;var E=m.px,T=+$('#fT').value,S=+$('#fS').value,P=$('#prev'),err='';
+  $('#fTp').textContent=isFinite(T)&&T?pct(T/E-1,1):'—';$('#fSp').textContent=isFinite(S)&&S?pct(S/E-1,1):'—';
+  if(!(T>0)||!(S>0))err='Enter a target and a stop.';else if(DIR>0&&!(T>E&&S<E))err='Long: target above price, stop below.';else if(DIR<0&&!(T<E&&S>E))err='Short: target below price, stop above.';
+  $('#ferr').textContent=err;if(err){P.innerHTML='Entry locks at <b>'+pfmt(E)+'</b>.';return}
+  var win=Math.round(100*1.5*reachMult(E,T)*TFM[TF]*CONV),lose=100*CONV;
+  P.innerHTML=(DIR>0?'LONG':'SHORT')+' <b>'+esc(SEL)+'</b> from <b>'+pfmt(E)+'</b> · '+(TF<24?TF+'h':TF===24?'24h':'7d')+'<br>Target hit: <span class="w">+'+win+' pts</span> · Stop hit: <span class="x">−'+lose+' pts</span>'}
+function loadCandles(k){var now=Date.now();if(CANDLES[k]&&now-CANDLES[k].t<60000){drawChart();return}
+  if(LIVE){fetch(HL_API,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({type:'candleSnapshot',req:{coin:k,interval:'1h',startTime:now-72*3600e3,endTime:now}})}).then(function(r){return r.json()}).then(function(d){if(!Array.isArray(d)||!d.length)throw 0;CANDLES[k]={t:now,c:d.map(function(c){return [+c.o,+c.h,+c.l,+c.c]})};drawChart()}).catch(function(){CANDLES[k]={t:now,c:synth(k)};drawChart()})}else{CANDLES[k]={t:now,c:synth(k)};drawChart()}}
+function synth(k){var m=M[k],R=srand(k.length*977+k.charCodeAt(0)),out=[],p=m.prev*(1-(m.px/m.prev-1)*1.2);for(var i=0;i<72;i++){var o=p,drift=(m.px-p)/(72-i),c=o+drift+(R()-.5)*o*.012,h=Math.max(o,c)*(1+R()*.005),l=Math.min(o,c)*(1-R()*.005);out.push([o,h,l,c]);p=c}out[71][3]=m.px;return out}
+function drawChart(){var cv=$('#cc'),r=cv.getBoundingClientRect();if(!r.width)return;var dpr=Math.min(2,devicePixelRatio||1),W=Math.round(r.width),H=Math.round(r.height);cv.width=W*dpr;cv.height=H*dpr;var x=cv.getContext('2d');x.setTransform(dpr,0,0,dpr,0,0);x.clearRect(0,0,W,H);
+  var C=(CANDLES[SEL]||{}).c;if(!C)return;var m=M[SEL],last=C.slice();last[last.length-1]=[last[last.length-1][0],Math.max(last[last.length-1][1],m.px),Math.min(last[last.length-1][2],m.px),m.px];
+  var T=+$('#fT').value,S=+$('#fS').value,lo=Infinity,hi=-Infinity;last.forEach(function(c){lo=Math.min(lo,c[2]);hi=Math.max(hi,c[1])});if(T>0&&!$('#ferr').textContent){lo=Math.min(lo,T,S);hi=Math.max(hi,T,S)}var pad=(hi-lo)*.08||1;lo-=pad;hi+=pad;
+  var L=8,Rr=64,Y=function(p){return 10+(hi-p)/(hi-lo)*(H-26)};
+  x.strokeStyle='#1b2a27';x.lineWidth=1;x.font='10px JetBrains Mono, monospace';x.fillStyle='#53645f';for(var g=0;g<=4;g++){var py=10+g*(H-26)/4,pv=hi-g*(hi-lo)/4;x.beginPath();x.moveTo(L,py+.5);x.lineTo(W-Rr,py+.5);x.stroke();x.fillText(pfmt(pv),W-Rr+6,py+3)}
+  var n=last.length,bw=(W-L-Rr)/n;last.forEach(function(c,i){var up=c[3]>=c[0],X=L+i*bw+bw/2;x.fillStyle=up?'#86efac':'#ff6b7a';x.fillRect(Math.round(X)-.5,Y(c[1]),1,Math.max(1,Y(c[2])-Y(c[1])));var top=Y(Math.max(c[0],c[3])),bh=Math.max(1,Math.abs(Y(c[0])-Y(c[3])));x.fillRect(Math.round(X-bw*.35),top,Math.max(1,Math.round(bw*.7)),bh)});
+  function hline(p,col,lab){if(!(p>0))return;var yy=Math.round(Y(p))+.5;x.strokeStyle=col;x.setLineDash([4,4]);x.beginPath();x.moveTo(L,yy);x.lineTo(W-Rr,yy);x.stroke();x.setLineDash([]);x.fillStyle=col;x.fillRect(W-Rr,yy-8,Rr,16);x.fillStyle='#070b0a';x.fillText(lab,W-Rr+4,yy+3.5)}
+  if(T>0&&!$('#ferr').textContent){hline(T,'#86efac','TGT');hline(S,'#ff6b7a','STOP')}
+  var py2=Math.round(Y(m.px))+.5;x.strokeStyle='#ffcf5a';x.beginPath();x.moveTo(L,py2);x.lineTo(W-Rr,py2);x.stroke();x.fillStyle='#ffcf5a';x.fillRect(W-Rr,py2-8,Rr,16);x.fillStyle='#070b0a';x.fillText(pfmt(m.px),W-Rr+4,py2+3.5);
+  x.fillStyle='#53645f';x.fillText((LIVE?'1H CANDLES · 72H · HYPERLIQUID':'SAMPLE CANDLES'),L+4,H-4)}
+function updateDesk(){var m=M[SEL];if(!m)return;var ch=m.px/m.prev-1;$('#cSym').textContent=SEL+'-PERP';$('#cPx').textContent=pfmt(m.px);$('#cChg').textContent=pct(ch);$('#cChg').className='num '+(ch>=0?'up':'dn');$('#cV').textContent=usd(m.vol);$('#cO').textContent=usd(m.oi);$('#cF').textContent=(m.fund*100).toFixed(4)+'%';$('#cF').className='num '+(m.fund>=0?'up':'dn');$('#cL').textContent=m.lev+'x';
+  $('#cTags').innerHTML=(PUMP_MARKETS.indexOf(SEL)>=0?'<span style="color:var(--pg);border-color:var(--pg)">ON PUMP.FUN</span>':'')+'<span style="color:var(--hl);border-color:var(--hl2)">HYPERLIQUID</span><span>RANK #'+m.rk+'</span>';drawChart();preview()}
+addEventListener('resize',function(){drawChart()});
+
+/* ================= CALLS ================= */
+var CALLS=[],MINE=LS.get('calls',[]),CF='all';
+var NAMES=['wickhunter','fundingfarmer','0xliqmagnet','perpgoblin','sol_scalper','hlwhale_jr','longonly.sol','shortsqueezr','candleclerk','degenbaron','tapedrift','basisbandit','oi_oracle','markpxmaxi'];
+function seedCommunity(){var R=srand(2026),now=Date.now();var mk=ORDER.slice(0,10);for(var i=0;i<14;i++){var k=mk[(R()*mk.length)|0],m=M[k],d=R()<.6?1:-1,tp=.01+R()*.06,sp=.006+R()*.025,tf=[1,4,24,168][(R()*4)|0],age=R()*tf*3600e3*.7;var E=m.px*(1-d*(R()-.45)*tp*.9);CALLS.push({id:'c'+i,who:NAMES[i%NAMES.length],m:k,d:d,E:E,T:E*(1+d*tp),S:E*(1-d*sp),tf:tf,conv:1+((R()*3)|0),t0:now-age,st:'open',sim:1})}
+  // a few settled
+  for(var j=0;j<6;j++){var k2=mk[(R()*mk.length)|0],m2=M[k2],d2=R()<.5?1:-1,E2=m2.px*(1+(R()-.5)*.04),w=R()<.6;CALLS.push({id:'s'+j,who:NAMES[(j+5)%NAMES.length],m:k2,d:d2,E:E2,T:E2*(1+d2*.03),S:E2*(1-d2*.015),tf:4,conv:2,t0:now-6*3600e3,st:w?'won':'lost',pts:w?Math.round(100*1.5*1*1.2*2):-200,sim:1,exit:w?E2*(1+d2*.03):E2*(1-d2*.015)})}
+  MINE.forEach(function(c){c.mine=1;CALLS.push(c)});CALLS.sort(function(a,b){return b.t0-a.t0})}
+function prog(c,P){return c.d*(P-c.E)/Math.abs(c.T-c.E)}
+function evalCalls(){var now=Date.now(),changed=false;CALLS.forEach(function(c){if(c.st!=='open'||!M[c.m])return;var P=M[c.m].px,rm=reachMult(c.E,c.T),tm=TFM[c.tf]||1;
+  if(c.d*(P-c.T)>=0){c.st='won';c.pts=Math.round(100*1.5*rm*tm*c.conv);c.exit=P;changed=true}else if(c.d*(P-c.S)<=0){c.st='lost';c.pts=-100*c.conv;c.exit=P;changed=true}else if(now-c.t0>=c.tf*3600e3){c.st='expired';c.pts=Math.round(100*Math.max(-1,Math.min(1,prog(c,P)))*rm*tm*c.conv);c.exit=P;changed=true}
+  if(changed&&c.mine&&c.st!=='open'){toast('Your '+c.m+' call settled: '+c.st.toUpperCase()+' '+(c.pts>=0?'+':'')+c.pts+' pts');}});
+  if(changed){MINE=CALLS.filter(function(c){return c.mine});LS.set('calls',MINE)}}
+function left(c){var ms=c.t0+c.tf*3600e3-Date.now();if(ms<=0)return 'expiring';var h=Math.floor(ms/3600e3),m=Math.floor(ms%3600e3/60e3);return h?h+'h '+m+'m left':m+'m left'}
+function renderCalls(){var L=CALLS.filter(function(c){return CF==='all'||(CF==='mine'&&c.mine)||(CF==='open'&&c.st==='open')||(CF==='done'&&c.st!=='open')}).slice(0,14),E=$('#lc');
+  var open=CALLS.filter(function(c){return c.st==='open'}).length;$('#cCount').textContent=open+' OPEN · '+(CALLS.length-open)+' SETTLED';$('#nL').textContent=CALLS.filter(function(c){return c.st==='open'&&c.d>0}).length+' open';$('#nS').textContent=CALLS.filter(function(c){return c.st==='open'&&c.d<0}).length+' open';
+  if(!L.length){E.innerHTML='<div class="call" style="grid-column:1/-1;color:var(--mut)">'+(CF==='mine'?'No calls yet. Make one at the call desk.':'Nothing here yet.')+'</div>';return}
+  E.innerHTML=L.map(function(c){var P=c.st==='open'&&M[c.m]?M[c.m].px:c.exit,lo=Math.min(c.S,c.T),hi=Math.max(c.S,c.T),pos=function(v){return Math.max(0,Math.min(100,(v-lo)/(hi-lo)*100))},ze=pos(c.E),pm=pos(P),g=c.d>0?(pm>=ze):(pm<=ze),fl=Math.min(ze,pm),fw=Math.abs(pm-ze);
+    var stt=c.st==='open'?'<span class="st">'+left(c)+'</span>':c.st==='won'?'<span class="st w">WON '+(c.pts>=0?'+':'')+c.pts+'</span>':c.st==='lost'?'<span class="st x">STOPPED '+c.pts+'</span>':'<span class="st e">EXPIRED '+(c.pts>=0?'+':'')+c.pts+'</span>';
+    var pr=prog(c,P);
+    return '<div class="call'+(c.mine?' mine':'')+'"><div class="t"><span class="d '+(c.d>0?'L':'S')+'">'+(c.d>0?'LONG':'SHORT')+'</span><b>'+esc(c.m)+'</b><span class="who">'+(c.mine?'you':'@'+esc(c.who))+'</span>'+stt+'</div>'+
+    '<div class="ln"><span>entry <b>'+pfmt(c.E)+'</b></span><span>target <b class="up">'+pfmt(c.T)+'</b></span><span>stop <b class="dn">'+pfmt(c.S)+'</b></span><span>×'+c.conv+' · '+(c.tf<24?c.tf+'h':c.tf===24?'24h':'7d')+'</span></div>'+
+    '<div class="track"><span class="f" style="left:'+fl+'%;width:'+fw+'%;background:'+(g?'#86efac':'#ff6b7a')+'"></span><span class="z" style="left:'+ze+'%"></span><span class="m" style="left:'+pm+'%"></span></div>'+
+    '<div class="ft"><span>'+(c.d>0?'stop ←':'target ←')+'</span><span>'+(c.st==='open'?'progress '+Math.round(pr*100)+'%':'settled at '+pfmt(P))+(c.sim?' · sim':'')+'</span><span>'+(c.d>0?'→ target':'→ stop')+'</span></div></div>'}).join('')}
+$$('#cf button').forEach(function(b){b.addEventListener('click',function(){CF=b.getAttribute('data-f');$$('#cf button').forEach(function(z){z.classList.toggle('on',z===b)});renderCalls()})});
+$('#form').addEventListener('submit',function(e){e.preventDefault();preview();if($('#ferr').textContent){toast($('#ferr').textContent);return}var m=M[SEL];if(MINE.filter(function(c){return c.st==='open'}).length>=10){toast('Max 10 open calls at once.');return}
+  var c={id:'m'+Date.now(),who:'you',m:SEL,d:DIR,E:m.px,T:+$('#fT').value,S:+$('#fS').value,tf:TF,conv:CONV,t0:Date.now(),st:'open',mine:1};CALLS.unshift(c);MINE=CALLS.filter(function(x){return x.mine});LS.set('calls',MINE);
+  CF='mine';$$('#cf button').forEach(function(z){z.classList.toggle('on',z.getAttribute('data-f')==='mine')});renderCalls();renderTable();renderBoard();toast('Call locked: '+(DIR>0?'LONG ':'SHORT ')+SEL+' from '+pfmt(m.px));$('#calls').scrollIntoView({behavior:'smooth'})});
+
+/* ================= CALL TYPE CARDS ================= */
+var CARDS=[['dir','01 / CORE','DIRECTION CALL','Long or short any Hyperliquid perp. Entry locks at the live mark price.',1],['tgt','02 / CORE','TARGET CALL','Name your price. Further targets score more when they land.',1],['stop','03 / CORE','STOP-BOUNDED','Every call carries a stop. Get stopped and you lose the points at risk.',1],['fund','04 / FUNDING','FUNDING FLIP','Call when a market’s funding turns from paying longs to paying shorts.',0],['oi','05 / OPEN INTEREST','OI SURGE','Call a jump in open interest before the crowd piles in.',0],['next','06 / PUMP.FUN','NEXT LISTING','Call which market pump.fun perps adds next. Pays from the 15% pool slice.',0]];
+$('#cards').innerHTML=CARDS.map(function(c){return '<div class="card"><span class="ar">↗</span><canvas class="px" data-ic2="'+c[0]+'" width="16" height="16"></canvas><div class="no">'+c[1]+'</div><h3>'+c[2]+'</h3><p>'+c[3]+'</p><div class="stt'+(c[4]?' on':'')+'">'+(c[4]?'LIVE IN PREVIEW':'AT LAUNCH')+'</div></div>'}).join('');
+$$('canvas[data-ic2]').forEach(function(c){paint(c,ICONS[c.getAttribute('data-ic2')])});
+$$('.card').forEach(function(c,i){c.style.cursor='pointer';c.addEventListener('click',function(){if(CARDS[i][4])$('#desk').scrollIntoView({behavior:'smooth'});else toast(CARDS[i][2]+' calls open at launch.')})});
+// cycle highlight
+var cyc=0;setInterval(function(){var S=$$('#cycle span');S.forEach(function(s,i){s.classList.toggle('on',i===cyc)});cyc=(cyc+1)%S.length},900);
+
+/* ================= LEADERBOARD ================= */
+var LB=[['perpgoblin',2840,31,.71],['wickhunter',2410,27,.67],['oi_oracle',2195,22,.73],['fundingfarmer',1880,40,.55],['sol_scalper',1612,35,.57],['shortsqueezr',1390,18,.61],['markpxmaxi',1205,24,.54],['candleclerk',980,19,.58],['0xliqmagnet',811,29,.48],['basisbandit',640,12,.58]];
+function renderBoard(){var mine=MINE.filter(function(c){return c.st!=='open'}),pts=mine.reduce(function(a,c){return a+(c.pts||0)},0),wins=mine.filter(function(c){return c.st==='won'}).length;var rows=LB.map(function(r){return {n:r[0],p:r[1],c:r[2],w:r[3]}});rows.push({n:'you',p:pts,c:MINE.length,w:mine.length?wins/mine.length:0,me:1});rows.sort(function(a,b){return b.p-a.p});
+  var myRank=rows.findIndex(function(r){return r.me})+1;var show=rows.slice(0,10);if(myRank>10)show.push(rows[myRank-1]);
+  $('#lbt').innerHTML='<div class="lr h"><span>RANK</span><span>CALLER</span><span>CALLS</span><span class="c-wr">WIN %</span><span>POINTS</span></div>'+show.map(function(r){var rk=rows.indexOf(r)+1;return '<div class="lr'+(r.me?' me':'')+'"><span class="r">'+(rk<4?['🥇','🥈','🥉'][rk-1]:rk)+'</span><span>'+(r.me?'<b>you</b> (this device)':'@'+esc(r.n))+'</span><span>'+r.c+'</span><span class="c-wr">'+Math.round(r.w*100)+'%</span><span class="'+(r.p>=0?'w':'dn')+'">'+r.p.toLocaleString()+'</span></div>'}).join('');
+  var openN=MINE.filter(function(c){return c.st==='open'}).length;$('#you').innerHTML=MINE.length?'Your rank: <b>#'+myRank+'</b> · '+pts+' pts · '+openN+' open call'+(openN===1?'':'s')+'. Top 10 split 60% of the pool.':'Make your first call to get on the board. Every settled call moves your rank.'}
+$('#poolV').textContent='48.6 SOL';
+function cd(){var n=new Date(),d=new Date(n);d.setUTCDate(n.getUTCDate()+((7-n.getUTCDay())%7||7));d.setUTCHours(0,0,0,0);var s=Math.max(0,(d-n)/1000|0);$('#cdT').textContent=Math.floor(s/86400)+'D '+String(Math.floor(s%86400/3600)).padStart(2,'0')+'H '+String(Math.floor(s%3600/60)).padStart(2,'0')+'M'}cd();setInterval(cd,30000);
+
+/* ================= LINKS ================= */
+function wire(a,url,msg){if(!a)return;if(url){a.href=url;a.target='_blank';a.rel='noopener noreferrer'}else a.addEventListener('click',function(e){e.preventDefault();toast(msg)})}
+['#xTop','#xA','#xFoot'].forEach(function(s){wire($(s),CONFIG.xUrl,'Our X drops soon. The launch is posted there.')});wire($('#buyA'),CONFIG.buyUrl,'$PUMPETUALS launches soon. The CA is posted on X.');
+if(CONFIG.ca)$('#caT').textContent=CONFIG.ca;
+$('#caC').addEventListener('click',function(){if(!CONFIG.ca){toast('Not posted yet. Watch our X.');return}try{navigator.clipboard.writeText(CONFIG.ca);toast('Copied')}catch(e){toast(CONFIG.ca)}});
+if('IntersectionObserver' in window){var io=new IntersectionObserver(function(es){es.forEach(function(e){if(e.isIntersecting){e.target.classList.add('in');io.unobserve(e.target);if(e.target.querySelector('#cc'))drawChart()}})},{threshold:.06});$$('.rv').forEach(function(el){io.observe(el)})}else $$('.rv').forEach(function(el){el.classList.add('in')});
+setInterval(function(){renderCalls()},30000);
+})();
+</script>
+</body>
+</html>
